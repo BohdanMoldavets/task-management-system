@@ -2,6 +2,7 @@ package com.moldavets.task_management_system.employee.controller;
 
 import com.moldavets.task_management_system.employee.dto.RequestEmployeeDto;
 import com.moldavets.task_management_system.employee.dto.ResponseEmployeeDto;
+import com.moldavets.task_management_system.employee.mapper.EmployeeDtoMapper;
 import com.moldavets.task_management_system.employee.model.Employee;
 import com.moldavets.task_management_system.employee.service.EmployeeService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -33,28 +34,14 @@ public class EmployeeController {
         if(storedEmployee == null) {
             return ResponseEntity.notFound().build();
         }
-        return ResponseEntity.ok().body(ResponseEmployeeDto.builder()
-                        .id(storedEmployee.getId())
-                        .username(storedEmployee.getUsername())
-                        .email(storedEmployee.getEmail())
-                        .created(storedEmployee.getCreated())
-                        .build());
+        return ResponseEntity.ok().body(EmployeeDtoMapper.mapToResponseEmployeeDto(storedEmployee));
     }
 
     @PostMapping
     public ResponseEntity<ResponseEmployeeDto> createEmployee(@RequestBody RequestEmployeeDto requestEmployeeDto) {
-        Employee storedEmployee = employeeService.save(Employee.builder()
-                        .username(requestEmployeeDto.getUsername())
-                        .email(requestEmployeeDto.getEmail())
-                        .password(requestEmployeeDto.getPassword())
-                        .build());
+        Employee storedEmployee = employeeService.save(EmployeeDtoMapper.mapRequestEmployeeDto(requestEmployeeDto));
 
-        return ResponseEntity.ok().body(ResponseEmployeeDto.builder()
-                .id(storedEmployee.getId())
-                .username(storedEmployee.getUsername())
-                .email(storedEmployee.getEmail())
-                .created(storedEmployee.getCreated())
-                .build());
+        return ResponseEntity.ok().body(EmployeeDtoMapper.mapToResponseEmployeeDto(storedEmployee));
     }
 
     @PutMapping("/{employeeId}")
@@ -72,12 +59,7 @@ public class EmployeeController {
 
         Employee updatedEmployee = employeeService.save(storedEmployee);
 
-        return ResponseEntity.ok().body(ResponseEmployeeDto.builder()
-                        .id(updatedEmployee.getId())
-                        .username(updatedEmployee.getUsername())
-                        .email(updatedEmployee.getEmail())
-                        .created(updatedEmployee.getCreated())
-                        .build());
+        return ResponseEntity.ok().body(EmployeeDtoMapper.mapToResponseEmployeeDto(updatedEmployee));
     }
 
     @DeleteMapping("/{employeeId}")
