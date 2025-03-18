@@ -8,6 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.Date;
 import java.util.List;
 
 @RestController
@@ -47,6 +48,7 @@ public class EmployeeController {
                         .email(requestEmployeeDto.getEmail())
                         .password(requestEmployeeDto.getPassword())
                         .build());
+
         return ResponseEntity.ok().body(ResponseEmployeeDto.builder()
                 .id(storedEmployee.getId())
                 .username(storedEmployee.getUsername())
@@ -55,20 +57,27 @@ public class EmployeeController {
                 .build());
     }
 
-    @PutMapping("{employeeId}")
+    @PutMapping("/{employeeId}")
     public ResponseEntity<ResponseEmployeeDto> updateEmployee(@PathVariable Long employeeId,
                                                               @RequestBody RequestEmployeeDto requestEmployeeDto) {
         Employee storedEmployee = employeeService.getById(employeeId);
-
         if(storedEmployee == null) {
             return ResponseEntity.notFound().build();
         }
+
+        storedEmployee.setUpdated(new Date());
         storedEmployee.setUsername(requestEmployeeDto.getUsername());
         storedEmployee.setEmail(requestEmployeeDto.getEmail());
         storedEmployee.setPassword(requestEmployeeDto.getPassword());
 
-        employeeService.save(storedEmployee);
-        return null;
+        Employee updatedEmployee = employeeService.save(storedEmployee);
+
+        return ResponseEntity.ok().body(ResponseEmployeeDto.builder()
+                        .id(updatedEmployee.getId())
+                        .username(updatedEmployee.getUsername())
+                        .email(updatedEmployee.getEmail())
+                        .created(updatedEmployee.getCreated())
+                        .build());
     }
 
     @DeleteMapping("/{employeeId}")
