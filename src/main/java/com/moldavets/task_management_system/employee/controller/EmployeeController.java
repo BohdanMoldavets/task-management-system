@@ -41,16 +41,35 @@ public class EmployeeController {
     }
 
     @PostMapping
-    public ResponseEntity<Employee> createEmployee(@RequestBody RequestEmployeeDto requestEmployeeDto) {
-        employeeService.save(Employee.builder()
+    public ResponseEntity<ResponseEmployeeDto> createEmployee(@RequestBody RequestEmployeeDto requestEmployeeDto) {
+        Employee storedEmployee = employeeService.save(Employee.builder()
                         .username(requestEmployeeDto.getUsername())
                         .email(requestEmployeeDto.getEmail())
                         .password(requestEmployeeDto.getPassword())
                         .build());
-        return ResponseEntity.ok().build();
+        return ResponseEntity.ok().body(ResponseEmployeeDto.builder()
+                .id(storedEmployee.getId())
+                .username(storedEmployee.getUsername())
+                .email(storedEmployee.getEmail())
+                .created(storedEmployee.getCreated())
+                .build());
     }
 
-    //todo put mapping
+    @PutMapping("{employeeId}")
+    public ResponseEntity<ResponseEmployeeDto> updateEmployee(@PathVariable Long employeeId,
+                                                              @RequestBody RequestEmployeeDto requestEmployeeDto) {
+        Employee storedEmployee = employeeService.getById(employeeId);
+
+        if(storedEmployee == null) {
+            return ResponseEntity.notFound().build();
+        }
+        storedEmployee.setUsername(requestEmployeeDto.getUsername());
+        storedEmployee.setEmail(requestEmployeeDto.getEmail());
+        storedEmployee.setPassword(requestEmployeeDto.getPassword());
+
+        employeeService.save(storedEmployee);
+        return null;
+    }
 
     @DeleteMapping("/{employeeId}")
     public ResponseEntity<?> deleteEmployeeById(@PathVariable("employeeId") Long employeeId) {

@@ -33,9 +33,9 @@ public class EmployeeServiceImpl implements EmployeeService {
 
     @Override
     @Transactional
-    public void save(Employee employee) {
+    public Employee save(Employee employee) {
         employee.setCreated(new Date());
-        employeeRepository.save(employee);
+        return employeeRepository.save(employee);
     }
 
     @Override
