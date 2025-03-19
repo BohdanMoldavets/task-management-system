@@ -1,6 +1,6 @@
 package com.moldavets.task_management_system.task.service.Impl;
 
-import com.moldavets.task_management_system.employee.exception.ResourceNotFoundException;
+import com.moldavets.task_management_system.exception.ResourceNotFoundException;
 import com.moldavets.task_management_system.task.dto.RequestTaskDto;
 import com.moldavets.task_management_system.task.model.Task;
 import com.moldavets.task_management_system.task.repository.TaskRepository;

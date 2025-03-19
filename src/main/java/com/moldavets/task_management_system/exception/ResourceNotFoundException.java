@@ -1,4 +1,4 @@
-package com.moldavets.task_management_system.employee.exception;
+package com.moldavets.task_management_system.exception;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.ResponseStatus;
