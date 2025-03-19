@@ -4,7 +4,7 @@ import com.moldavets.task_management_system.employee.dto.RequestEmployeeDto;
 import com.moldavets.task_management_system.employee.dto.ResponseEmployeeDto;
 import com.moldavets.task_management_system.employee.model.Employee;
 
-public class EmployeeDtoMapper {
+public class EmployeeMapper {
 
     public static Employee mapRequestEmployeeDto(RequestEmployeeDto requestEmployeeDto) {
         return Employee.builder()

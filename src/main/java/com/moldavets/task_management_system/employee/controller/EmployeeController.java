@@ -2,7 +2,7 @@ package com.moldavets.task_management_system.employee.controller;
 
 import com.moldavets.task_management_system.employee.dto.RequestEmployeeDto;
 import com.moldavets.task_management_system.employee.dto.ResponseEmployeeDto;
-import com.moldavets.task_management_system.employee.mapper.EmployeeDtoMapper;
+import com.moldavets.task_management_system.employee.mapper.EmployeeMapper;
 import com.moldavets.task_management_system.employee.model.Employee;
 import com.moldavets.task_management_system.employee.service.EmployeeService;
 import jakarta.validation.Valid;
@@ -24,7 +24,7 @@ public class EmployeeController {
     @GetMapping
     public ResponseEntity<List<ResponseEmployeeDto>> getAllEmployees() {
         return new ResponseEntity<>(employeeService.getAll().stream()
-                .map(EmployeeDtoMapper::mapToResponseEmployeeDto)
+                .map(EmployeeMapper::mapToResponseEmployeeDto)
                 .toList(),
                 HttpStatus.OK);
     }
@@ -32,16 +32,16 @@ public class EmployeeController {
     @GetMapping("/{employeeId}")
     public ResponseEntity<ResponseEmployeeDto> getEmployeeById(@PathVariable("employeeId") Long employeeId) {
         return new ResponseEntity<>(
-                EmployeeDtoMapper.mapToResponseEmployeeDto(employeeService.getById(employeeId)),
+                EmployeeMapper.mapToResponseEmployeeDto(employeeService.getById(employeeId)),
                 HttpStatus.OK
         );
     }
 
     @PostMapping
     public ResponseEntity<ResponseEmployeeDto> createEmployee(@Valid @RequestBody RequestEmployeeDto requestEmployeeDto) {
-        Employee storedEmployee = employeeService.save(EmployeeDtoMapper.mapRequestEmployeeDto(requestEmployeeDto));
+        Employee storedEmployee = employeeService.save(EmployeeMapper.mapRequestEmployeeDto(requestEmployeeDto));
         return new ResponseEntity<>(
-                EmployeeDtoMapper.mapToResponseEmployeeDto(storedEmployee),
+                EmployeeMapper.mapToResponseEmployeeDto(storedEmployee),
                 HttpStatus.CREATED
         );
     }
@@ -50,7 +50,7 @@ public class EmployeeController {
     public ResponseEntity<ResponseEmployeeDto> updateEmployee(@PathVariable Long employeeId,
                                                               @Valid @RequestBody RequestEmployeeDto requestEmployeeDto) {
         return new ResponseEntity<>(
-                EmployeeDtoMapper.mapToResponseEmployeeDto(employeeService.update(employeeId, requestEmployeeDto)),
+                EmployeeMapper.mapToResponseEmployeeDto(employeeService.update(employeeId, requestEmployeeDto)),
                 HttpStatus.OK
         );
     }
