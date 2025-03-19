@@ -20,6 +20,9 @@ public class EmployeeDtoMapper {
                 .username(employee.getUsername())
                 .email(employee.getEmail())
                 .created(employee.getCreated())
+                .updated(employee.getUpdated())
+                .roles(employee.getRoles())
+                .tasks(employee.getTasks())
                 .build();
     }
 

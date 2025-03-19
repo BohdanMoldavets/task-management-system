@@ -1,5 +1,6 @@
 package com.moldavets.task_management_system.employee.service.Impl;
 
+import com.moldavets.task_management_system.employee.exception.EmployeeNotFoundException;
 import com.moldavets.task_management_system.employee.model.Employee;
 import com.moldavets.task_management_system.employee.repository.EmployeeRepository;
 import com.moldavets.task_management_system.employee.service.EmployeeService;
@@ -7,8 +8,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.time.LocalDate;
-import java.util.Date;
 import java.util.List;
 
 @Service
@@ -34,7 +33,6 @@ public class EmployeeServiceImpl implements EmployeeService {
     @Override
     @Transactional
     public Employee save(Employee employee) {
-        employee.setCreated(new Date());
         return employeeRepository.save(employee);
     }
 
@@ -43,6 +41,8 @@ public class EmployeeServiceImpl implements EmployeeService {
     public void deleteById(Long id) {
         if(employeeRepository.findById(id).orElse(null) != null) {
             employeeRepository.deleteById(id);
+        } else {
+            throw new EmployeeNotFoundException(String.format("Employee with id %s not found", id));
         }
     }
 }
