@@ -5,6 +5,7 @@ import com.moldavets.task_management_system.employee.exception.EmployeeNotFoundE
 import com.moldavets.task_management_system.employee.model.Employee;
 import com.moldavets.task_management_system.employee.repository.EmployeeRepository;
 import com.moldavets.task_management_system.employee.service.EmployeeService;
+import lombok.AllArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -13,17 +14,13 @@ import java.util.Date;
 import java.util.List;
 
 @Service
+@AllArgsConstructor
 public class EmployeeServiceImpl implements EmployeeService {
 
-    EmployeeRepository employeeRepository;
-
-    @Autowired
-    public EmployeeServiceImpl(EmployeeRepository employeeRepository) {
-        this.employeeRepository = employeeRepository;
-    }
+    private final EmployeeRepository employeeRepository;
 
     @Override
-    public List<Employee> getAllEmployees() {
+    public List<Employee> getAll() {
         return employeeRepository.findAll();
     }
 

@@ -23,7 +23,7 @@ public class EmployeeController {
 
     @GetMapping
     public ResponseEntity<List<ResponseEmployeeDto>> getAllEmployees() {
-        return new ResponseEntity<>(employeeService.getAllEmployees().stream()
+        return new ResponseEntity<>(employeeService.getAll().stream()
                 .map(EmployeeDtoMapper::mapToResponseEmployeeDto)
                 .toList(),
                 HttpStatus.OK);
