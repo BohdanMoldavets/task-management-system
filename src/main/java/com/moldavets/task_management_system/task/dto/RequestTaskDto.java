@@ -6,6 +6,7 @@ import com.moldavets.task_management_system.utils.enums.TaskStatus;
 import com.moldavets.task_management_system.utils.enums.TaskType;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
+import jakarta.validation.constraints.Size;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -17,6 +18,7 @@ import lombok.NoArgsConstructor;
 @Builder
 public class RequestTaskDto {
 
+    @Size(min = 1, max = 255, message = "Title length should be greater than 1 character or less than 255 characters")
     @JsonProperty("title")
     private String title;
 

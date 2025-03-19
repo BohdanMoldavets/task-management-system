@@ -8,6 +8,7 @@ import com.moldavets.task_management_system.task.service.TaskService;
 import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.HttpStatusCode;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -28,11 +29,13 @@ public class TaskController {
                 HttpStatus.OK);
     }
 
-//    todo
-//    @GetMapping("/{taskId}")
-//    public ResponseEntity<ResponseTaskDto> getTaskById(@PathVariable("taskId")  Long taskId) {
-//        return null;
-//    }
+    @GetMapping("/{taskId}")
+    public ResponseEntity<ResponseTaskDto> getTaskById(@PathVariable("taskId")  Long taskId) {
+        return new ResponseEntity<>(
+                TaskMapper.mapToResponseTaskDto(taskService.getById(taskId)),
+                HttpStatus.OK
+        );
+    }
 
     @PostMapping
     public ResponseEntity<ResponseTaskDto> createTask(@Valid @RequestBody RequestTaskDto requestTaskDto) {
@@ -41,6 +44,21 @@ public class TaskController {
                 TaskMapper.mapToResponseTaskDto(storedTask),
                 HttpStatus.CREATED
         );
+    }
+
+    @PutMapping("/{taskId}")
+    public ResponseEntity<ResponseTaskDto> updateTaskById(@PathVariable("taskId") Long taskId,
+                                                      @Valid @RequestBody RequestTaskDto requestTaskDto) {
+        return new ResponseEntity<>(
+                TaskMapper.mapToResponseTaskDto(taskService.update(taskId, requestTaskDto)),
+                HttpStatus.OK
+        );
+    }
+
+    @DeleteMapping("/{taskId}")
+    public ResponseEntity<HttpStatusCode> deleteTaskById(@PathVariable("taskId") Long taskId) {
+        taskService.delete(taskId);
+        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
 
 }

@@ -1,10 +1,9 @@
 package com.moldavets.task_management_system.employee.exception.handler;
 
-import com.moldavets.task_management_system.employee.exception.EmployeeNotFoundException;
+import com.moldavets.task_management_system.employee.exception.ResourceNotFoundException;
 import com.moldavets.task_management_system.employee.exception.model.ExceptionDetailsModel;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.MissingPathVariableException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
@@ -28,8 +27,8 @@ public class CustomResponseEntityExceptionHandler {
         return new ResponseEntity<>(createExceptionDetailsModel(ex, request), HttpStatus.BAD_REQUEST);
     }
 
-    @ExceptionHandler(EmployeeNotFoundException.class)
-    public ResponseEntity<ExceptionDetailsModel> handleEmployeeNotFoundException(Exception ex, WebRequest request) {
+    @ExceptionHandler(ResourceNotFoundException.class)
+    public ResponseEntity<ExceptionDetailsModel> handleResourceNotFoundException(Exception ex, WebRequest request) {
         return new ResponseEntity<>(createExceptionDetailsModel(ex, request), HttpStatus.NOT_FOUND);
     }
 
