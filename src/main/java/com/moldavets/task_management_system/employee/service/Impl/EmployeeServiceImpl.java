@@ -1,5 +1,6 @@
 package com.moldavets.task_management_system.employee.service.Impl;
 
+import com.moldavets.task_management_system.employee.dto.RequestEmployeeDto;
 import com.moldavets.task_management_system.employee.exception.EmployeeNotFoundException;
 import com.moldavets.task_management_system.employee.model.Employee;
 import com.moldavets.task_management_system.employee.repository.EmployeeRepository;
@@ -8,6 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.Date;
 import java.util.List;
 
 @Service
@@ -27,22 +29,36 @@ public class EmployeeServiceImpl implements EmployeeService {
 
     @Override
     public Employee getById(Long id) {
-        return employeeRepository.findById(id).orElse(null);
+        return employeeRepository.findById(id)
+                .orElseThrow(() -> new EmployeeNotFoundException(String.format("Employee with id %s not found", id)));
     }
 
     @Override
     @Transactional
     public Employee save(Employee employee) {
+        employee.setCreated(new Date());
         return employeeRepository.save(employee);
     }
 
     @Override
     @Transactional
+    public Employee update(Long id, RequestEmployeeDto requestEmployeeDto) {
+        Employee storedEmployee = employeeRepository.findById(id)
+                .orElseThrow(() -> new EmployeeNotFoundException(String.format("Employee with id %s not found", id)));
+
+        storedEmployee.setUpdated(new Date());
+        storedEmployee.setUsername(requestEmployeeDto.getUsername());
+        storedEmployee.setEmail(requestEmployeeDto.getEmail());
+        storedEmployee.setPassword(requestEmployeeDto.getPassword());
+
+        return employeeRepository.save(storedEmployee);
+    }
+
+    @Override
+    @Transactional
     public void deleteById(Long id) {
-        if(employeeRepository.findById(id).orElse(null) != null) {
-            employeeRepository.deleteById(id);
-        } else {
-            throw new EmployeeNotFoundException(String.format("Employee with id %s not found", id));
-        }
+        employeeRepository.findById(id)
+                .orElseThrow( () -> new EmployeeNotFoundException(String.format("Employee with id %s not found", id)));
+        employeeRepository.deleteById(id);
     }
 }
