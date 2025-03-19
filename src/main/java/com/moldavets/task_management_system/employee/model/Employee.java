@@ -1,5 +1,8 @@
 package com.moldavets.task_management_system.employee.model;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import com.moldavets.task_management_system.task.model.Task;
 import com.moldavets.task_management_system.utils.entity.BaseEntity;
 import jakarta.persistence.*;
@@ -25,7 +28,7 @@ public class Employee extends BaseEntity {
     @Column(name = "email")
     private String email;
 
-    @ManyToMany
+    @ManyToMany(cascade = CascadeType.ALL)
     @JoinTable(
             name = "employees_roles",
             joinColumns = @JoinColumn(name = "employee_id", referencedColumnName = "id"),
@@ -34,6 +37,7 @@ public class Employee extends BaseEntity {
     private List<Role> roles;
 
     @ManyToMany
+    @JsonIgnore
     @JoinTable(
             name = "employees_tasks",
             joinColumns = @JoinColumn(name = "employee_id"),

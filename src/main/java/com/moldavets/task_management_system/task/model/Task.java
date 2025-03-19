@@ -1,5 +1,7 @@
 package com.moldavets.task_management_system.task.model;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import com.moldavets.task_management_system.employee.model.Employee;
 import com.moldavets.task_management_system.utils.entity.BaseEntity;
 import com.moldavets.task_management_system.utils.enums.TaskStatus;
@@ -34,6 +36,7 @@ public class Task extends BaseEntity {
     private TaskStatus status;
 
     @ManyToMany(mappedBy = "tasks")
+    @JsonBackReference
     private List<Employee> employees;
 
     public String getTitle() {

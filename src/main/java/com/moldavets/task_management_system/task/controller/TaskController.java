@@ -1,10 +1,18 @@
 package com.moldavets.task_management_system.task.controller;
 
+import com.moldavets.task_management_system.employee.dto.RequestEmployeeDto;
+import com.moldavets.task_management_system.employee.dto.ResponseEmployeeDto;
+import com.moldavets.task_management_system.employee.mapper.EmployeeMapper;
+import com.moldavets.task_management_system.employee.model.Employee;
+import com.moldavets.task_management_system.employee.service.EmployeeService;
 import com.moldavets.task_management_system.task.dto.RequestTaskDto;
+import com.moldavets.task_management_system.task.dto.RequestTaskEmployeesIds;
+import com.moldavets.task_management_system.task.dto.RequestTaskStatusUpdate;
 import com.moldavets.task_management_system.task.dto.ResponseTaskDto;
 import com.moldavets.task_management_system.task.mapper.TaskMapper;
 import com.moldavets.task_management_system.task.model.Task;
 import com.moldavets.task_management_system.task.service.TaskService;
+import com.moldavets.task_management_system.utils.enums.TaskStatus;
 import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -20,6 +28,7 @@ import java.util.List;
 public class TaskController {
 
     private final TaskService taskService;
+    private final EmployeeService employeeService;
 
     @GetMapping
     public ResponseEntity<List<ResponseTaskDto>> getAllTasks() {
@@ -37,6 +46,15 @@ public class TaskController {
         );
     }
 
+    @GetMapping("/{taskId}/employees")
+    public ResponseEntity<List<ResponseEmployeeDto>> getAllEmployeesByTaskId(@PathVariable("taskId") Long taskId) {
+        return new ResponseEntity<>(taskService.getById(taskId).getEmployees().stream()
+                .map(EmployeeMapper::mapToResponseEmployeeDto)
+                .toList(),
+                HttpStatus.OK
+        );
+    }
+
     @PostMapping
     public ResponseEntity<ResponseTaskDto> createTask(@Valid @RequestBody RequestTaskDto requestTaskDto) {
         Task storedTask = taskService.save(TaskMapper.mapRequestTaskDto(requestTaskDto));
@@ -48,9 +66,25 @@ public class TaskController {
 
     @PutMapping("/{taskId}")
     public ResponseEntity<ResponseTaskDto> updateTaskById(@PathVariable("taskId") Long taskId,
-                                                      @Valid @RequestBody RequestTaskDto requestTaskDto) {
+                                                          @Valid @RequestBody RequestTaskDto requestTaskDto) {
         return new ResponseEntity<>(
                 TaskMapper.mapToResponseTaskDto(taskService.update(taskId, requestTaskDto)),
+                HttpStatus.OK
+        );
+    }
+
+    @PutMapping("/{taskId}/employees")
+    public ResponseEntity<ResponseTaskDto> updateEmployeesById(@PathVariable("taskId") Long taskId,
+                                                               @RequestBody RequestTaskEmployeesIds taskEmployeesIds) {
+        Task updatedTask = taskService.assignEmployeesToTask(taskId, taskEmployeesIds);
+        return new ResponseEntity<>(TaskMapper.mapToResponseTaskDto(updatedTask), HttpStatus.OK);
+    }
+
+    @PatchMapping("/{taskId}")
+    public ResponseEntity<ResponseTaskDto> patchTaskById(@PathVariable("taskId") Long taskId,
+                                                         @RequestBody RequestTaskStatusUpdate requestTaskStatus) {
+        return new ResponseEntity<>(
+                TaskMapper.mapToResponseTaskDto(taskService.updateStatusById(taskId, requestTaskStatus.getStatus())),
                 HttpStatus.OK
         );
     }
