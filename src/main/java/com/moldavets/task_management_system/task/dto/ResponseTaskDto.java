@@ -4,22 +4,25 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import com.moldavets.task_management_system.employee.model.Employee;
 import com.moldavets.task_management_system.utils.enums.TaskStatus;
 import com.moldavets.task_management_system.utils.enums.TaskType;
-import jakarta.persistence.Column;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
-import jakarta.persistence.ManyToMany;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.util.Date;
 import java.util.List;
 
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-public class TaskDto {
+public class ResponseTaskDto {
+
+    @JsonProperty("id")
+    private Long id;
+
     @JsonProperty("title")
     private String title;
 
@@ -33,6 +36,12 @@ public class TaskDto {
     @Enumerated(EnumType.STRING)
     @JsonProperty("status")
     private TaskStatus status;
+
+    @JsonProperty("created")
+    private Date created;
+
+    @JsonProperty("updated")
+    private Date updated;
 
     @JsonProperty("employees")
     private List<Employee> employees;
