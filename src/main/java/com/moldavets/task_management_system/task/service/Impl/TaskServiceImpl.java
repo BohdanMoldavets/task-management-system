@@ -1,6 +1,5 @@
 package com.moldavets.task_management_system.task.service.Impl;
 
-import com.moldavets.task_management_system.employee.mapper.EmployeeMapper;
 import com.moldavets.task_management_system.employee.model.Employee;
 import com.moldavets.task_management_system.employee.repository.EmployeeRepository;
 import com.moldavets.task_management_system.exception.ResourceNotFoundException;
@@ -71,23 +70,53 @@ public class TaskServiceImpl implements TaskService {
 
     @Override
     @Transactional
-    public Task assignEmployeesToTask(Long id, RequestTaskEmployeesIds taskEmployeesIds) {
+    public Task assignEmployeeToTask(Long id, Long employeeId) {
         Task storedTask = taskRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException(String.format("Task with id %s not found", id)));
 
-        List<Employee> employees =
-                employeeRepository.findAllById(taskEmployeesIds.getEmployeeIds());
+        Employee storedEmployee = employeeRepository.findById(employeeId)
+                .orElseThrow(() -> new ResourceNotFoundException(String.format("Employee with id %s not found", employeeId)));
 
-        storedTask.setEmployees(employees);
-        for(Employee employee : employees) {
-            if(!employee.getTasks().contains(storedTask)) {
-                employee.getTasks().add(storedTask);
-            }
+        List<Employee> taskEmployees = storedTask.getEmployees();
+        taskEmployees.add(storedEmployee);
+
+        storedTask.setEmployees(taskEmployees);
+
+        if(!storedEmployee.getTasks().contains(storedTask)) {
+            storedEmployee.getTasks().add(storedTask);
+            storedEmployee.setUpdated(new Date());
         }
 
         Task updatedTask = taskRepository.save(storedTask);
-        employeeRepository.saveAll(employees);
+        employeeRepository.save(storedEmployee);
+        return updatedTask;
+    }
 
+    @Override
+    @Transactional
+    public Task unassignEmployeeToTask(Long id, Long employeeId) {
+        String ResourceNotFoundExceptionMessage = String.format("Employee with id %s already unassigned to task with id %s", id, employeeId);
+
+        Task storedTask = taskRepository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException(String.format("Task with id %s not found", id)));
+
+        Employee storedEmployee = employeeRepository.findById(employeeId)
+                .orElseThrow(() -> new ResourceNotFoundException(String.format("Employee with id %s not found", employeeId)));
+
+        if (!storedTask.getEmployees().contains(storedEmployee)) {
+            throw new ResourceNotFoundException(ResourceNotFoundExceptionMessage);
+        }
+        storedTask.getEmployees().remove(storedEmployee);
+        storedTask.setUpdated(new Date());
+
+        if(!storedEmployee.getTasks().contains(storedTask)) {
+            throw new ResourceNotFoundException(ResourceNotFoundExceptionMessage);
+        }
+        storedEmployee.getTasks().remove(storedTask);
+        storedEmployee.setUpdated(new Date());
+
+        Task updatedTask = taskRepository.save(storedTask);
+        employeeRepository.save(storedEmployee);
         return updatedTask;
     }
 

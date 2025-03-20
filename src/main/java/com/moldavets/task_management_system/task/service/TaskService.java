@@ -1,7 +1,6 @@
 package com.moldavets.task_management_system.task.service;
 
 import com.moldavets.task_management_system.task.dto.RequestTaskDto;
-import com.moldavets.task_management_system.task.dto.RequestTaskEmployeesIds;
 import com.moldavets.task_management_system.task.model.Task;
 import com.moldavets.task_management_system.utils.enums.TaskStatus;
 
@@ -14,6 +13,7 @@ public interface TaskService {
     Task save(Task task);
     Task update(Long id, RequestTaskDto task);
     Task updateStatusById(Long id, TaskStatus taskStatus);
-    Task assignEmployeesToTask(Long id, RequestTaskEmployeesIds taskEmployeesIds);
+    Task assignEmployeeToTask(Long id, Long employeeId);
+    Task unassignEmployeeToTask(Long id, Long employeeId);
     void delete(Long id);
 }
