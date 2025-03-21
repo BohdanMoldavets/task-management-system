@@ -30,7 +30,7 @@ public class JwtTokenUtils {
         Map<String, Object> claims = new HashMap<>();
         List<String> roles = userDetails.getAuthorities().stream()
                 .map(a -> a.getAuthority())
-                .collect(Collectors.toList());
+                .toList();
         claims.put("roles", roles);
         Date issudeDate = new Date();
         Date expiresDate = new Date(issudeDate.getTime() + jwtLifetime.toMillis());

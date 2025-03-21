@@ -1,6 +1,7 @@
 package com.moldavets.task_management_system.auth.config;
 
 import com.moldavets.task_management_system.employee.service.EmployeeService;
+import com.moldavets.task_management_system.employee.service.Impl.EmployeeServiceImpl;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;

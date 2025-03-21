@@ -1,6 +1,7 @@
 package com.moldavets.task_management_system.exception.handler;
 
 import com.moldavets.task_management_system.exception.ResourceNotFoundException;
+import com.moldavets.task_management_system.exception.UnauthorizedException;
 import com.moldavets.task_management_system.exception.model.ExceptionDetailsModel;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -30,6 +31,11 @@ public class CustomResponseEntityExceptionHandler {
     @ExceptionHandler(ResourceNotFoundException.class)
     public ResponseEntity<ExceptionDetailsModel> handleResourceNotFoundException(Exception ex, WebRequest request) {
         return new ResponseEntity<>(createExceptionDetailsModel(ex, request), HttpStatus.NOT_FOUND);
+    }
+
+    @ExceptionHandler(UnauthorizedException.class)
+    public ResponseEntity<ExceptionDetailsModel> handleUnauthorizedException(Exception ex, WebRequest request) {
+        return new ResponseEntity<>(createExceptionDetailsModel(ex, request), HttpStatus.UNAUTHORIZED);
     }
 
     @ExceptionHandler(MethodArgumentNotValidException.class)
