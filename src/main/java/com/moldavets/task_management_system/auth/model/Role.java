@@ -1,14 +1,17 @@
-package com.moldavets.task_management_system.employee.model;
+package com.moldavets.task_management_system.auth.model;
 
+import com.moldavets.task_management_system.employee.model.Employee;
 import com.moldavets.task_management_system.utils.entity.BaseEntity;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.ManyToMany;
 import jakarta.persistence.Table;
+import lombok.Data;
 
 import java.util.List;
 
 @Entity
+@Data
 @Table(name = "roles")
 public class Role extends BaseEntity {
 

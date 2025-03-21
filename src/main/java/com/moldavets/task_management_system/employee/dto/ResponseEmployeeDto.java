@@ -1,13 +1,10 @@
 package com.moldavets.task_management_system.employee.dto;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
-import com.moldavets.task_management_system.employee.model.Role;
+import com.moldavets.task_management_system.auth.model.Role;
 import com.moldavets.task_management_system.task.model.Task;
-import jakarta.persistence.Column;
 import lombok.Builder;
 import lombok.Data;
-import lombok.NoArgsConstructor;
-import lombok.RequiredArgsConstructor;
 
 import java.util.Date;
 import java.util.List;

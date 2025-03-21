@@ -1,8 +1,7 @@
 package com.moldavets.task_management_system.employee.model;
 
-import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.annotation.JsonManagedReference;
+import com.moldavets.task_management_system.auth.model.Role;
 import com.moldavets.task_management_system.task.model.Task;
 import com.moldavets.task_management_system.utils.entity.BaseEntity;
 import jakarta.persistence.*;
