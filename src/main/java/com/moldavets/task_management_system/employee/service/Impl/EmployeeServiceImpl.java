@@ -12,6 +12,7 @@ import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -24,6 +25,7 @@ public class EmployeeServiceImpl implements EmployeeService, UserDetailsService 
 
     private final EmployeeRepository employeeRepository;
     private final RoleService roleService;
+    private final PasswordEncoder passwordEncoder;
 
     @Override
     public List<Employee> getAll() {
@@ -45,6 +47,7 @@ public class EmployeeServiceImpl implements EmployeeService, UserDetailsService 
     @Override
     @Transactional
     public Employee save(Employee employee) {
+        employee.setPassword(passwordEncoder.encode(employee.getPassword()));
         employee.setCreated(new Date());
         employee.setRoles(List.of(roleService.findByName("ROLE_EMPLOYEE")));
         return employeeRepository.save(employee);

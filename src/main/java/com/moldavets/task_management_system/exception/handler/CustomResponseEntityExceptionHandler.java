@@ -1,7 +1,7 @@
 package com.moldavets.task_management_system.exception.handler;
 
 import com.moldavets.task_management_system.exception.ResourceNotFoundException;
-import com.moldavets.task_management_system.exception.UnauthorizedException;
+import com.moldavets.task_management_system.auth.exception.UnauthorizedException;
 import com.moldavets.task_management_system.exception.model.ExceptionDetailsModel;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
