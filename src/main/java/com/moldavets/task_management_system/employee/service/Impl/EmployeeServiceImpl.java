@@ -7,6 +7,9 @@ import com.moldavets.task_management_system.employee.model.Employee;
 import com.moldavets.task_management_system.employee.repository.EmployeeRepository;
 import com.moldavets.task_management_system.employee.service.EmployeeService;
 import lombok.AllArgsConstructor;
+import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -20,7 +23,7 @@ import java.util.Date;
 import java.util.List;
 
 @Service
-@AllArgsConstructor
+@RequiredArgsConstructor(onConstructor_ = {@Lazy})
 public class EmployeeServiceImpl implements EmployeeService, UserDetailsService {
 
     private final EmployeeRepository employeeRepository;
@@ -45,11 +48,17 @@ public class EmployeeServiceImpl implements EmployeeService, UserDetailsService 
     }
 
     @Override
+    public Boolean isExist(String username) {
+        return employeeRepository.existsEmployeeByUsername(username);
+    }
+
+    //TODO - created TIMESTAMP WITHOUT TIME ZONE DEFAULT NOW() add to migration
+    @Override
     @Transactional
     public Employee save(Employee employee) {
         employee.setPassword(passwordEncoder.encode(employee.getPassword()));
         employee.setCreated(new Date());
-        employee.setRoles(List.of(roleService.findByName("ROLE_EMPLOYEE")));
+        employee.setRoles(List.of(roleService.getByName("ROLE_EMPLOYEE")));
         return employeeRepository.save(employee);
     }
 

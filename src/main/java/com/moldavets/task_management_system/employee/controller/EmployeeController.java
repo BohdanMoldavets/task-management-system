@@ -37,14 +37,15 @@ public class EmployeeController {
         );
     }
 
-    @PostMapping
-    public ResponseEntity<ResponseEmployeeDto> createEmployee(@Valid @RequestBody RequestEmployeeDto requestEmployeeDto) {
-        Employee storedEmployee = employeeService.save(EmployeeMapper.mapRequestEmployeeDto(requestEmployeeDto));
-        return new ResponseEntity<>(
-                EmployeeMapper.mapToResponseEmployeeDto(storedEmployee),
-                HttpStatus.CREATED
-        );
-    }
+// todo delete because registration implemented in AuthController
+//    @PostMapping
+//    public ResponseEntity<ResponseEmployeeDto> createEmployee(@Valid @RequestBody RequestEmployeeDto requestEmployeeDto) {
+//        Employee storedEmployee = employeeService.save(EmployeeMapper.mapRequestEmployeeDto(requestEmployeeDto));
+//        return new ResponseEntity<>(
+//                EmployeeMapper.mapToResponseEmployeeDto(storedEmployee),
+//                HttpStatus.CREATED
+//        );
+//    }
 
     @PutMapping("/{employeeId}")
     public ResponseEntity<ResponseEmployeeDto> updateEmployee(@PathVariable Long employeeId,

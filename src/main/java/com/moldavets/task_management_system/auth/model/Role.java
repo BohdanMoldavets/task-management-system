@@ -1,5 +1,6 @@
 package com.moldavets.task_management_system.auth.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.moldavets.task_management_system.employee.model.Employee;
 import com.moldavets.task_management_system.utils.entity.BaseEntity;
 import jakarta.persistence.Column;
@@ -18,6 +19,7 @@ public class Role extends BaseEntity {
     @Column(name = "name")
     String name;
 
+    @JsonIgnore
     @ManyToMany(mappedBy = "roles")
     private List<Employee> employees;
 

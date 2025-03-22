@@ -7,7 +7,7 @@ import lombok.Data;
 
 @Data
 @AllArgsConstructor
-public class RegistrationResponseDto {
+public class ResponseRegistrationDto {
 
     @JsonProperty("id")
     private Long id;
