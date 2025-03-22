@@ -5,6 +5,7 @@ import com.moldavets.task_management_system.employee.service.Impl.EmployeeServic
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
@@ -27,6 +28,8 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 @RequiredArgsConstructor
 public class SecurityConfig {
 
+    private final String ROLE_MANAGER = "ROLE_MANAGER";
+
     private final UserDetailsService employeeService;
     private final JwtRequestFilter jwtRequestFilter;
 
@@ -36,10 +39,21 @@ public class SecurityConfig {
                 .csrf(AbstractHttpConfigurer::disable)
                 .cors(AbstractHttpConfigurer::disable)
                 .authorizeHttpRequests(auth -> auth
-                    .requestMatchers("api/v1/employees").authenticated()
-//                    .requestMatchers("api/v1/tasks").authenticated()
-                    .requestMatchers("api/v1/tasks").hasAuthority("ROLE_MANAGER")
-                    .anyRequest().permitAll()
+
+                        .requestMatchers(HttpMethod.GET,"/api/v1/employees").authenticated()
+                        .requestMatchers(HttpMethod.PUT,"/api/v1/employees/**").hasAuthority(ROLE_MANAGER)
+                        .requestMatchers(HttpMethod.DELETE,"/api/v1/employees/**").hasAuthority(ROLE_MANAGER)
+
+                        .requestMatchers(HttpMethod.GET,"/api/v1/tasks/**").authenticated()
+                        .requestMatchers(HttpMethod.PATCH,"/api/v1/tasks/**").authenticated()
+                        .requestMatchers(HttpMethod.POST,"/api/v1/tasks/**").hasAuthority(ROLE_MANAGER)
+                        .requestMatchers(HttpMethod.PUT,"/api/v1/tasks/**").hasAuthority(ROLE_MANAGER)
+                        .requestMatchers(HttpMethod.DELETE,"/api/v1/tasks/**").hasAuthority(ROLE_MANAGER)
+
+                        .requestMatchers("/api/v1/auth/login/**").permitAll()
+                        .requestMatchers("/api/v1/auth/registration").hasAuthority(ROLE_MANAGER)
+                        .anyRequest().authenticated()
+
                 ).sessionManagement(session -> session
                         .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
                 ).exceptionHandling(exception -> exception
