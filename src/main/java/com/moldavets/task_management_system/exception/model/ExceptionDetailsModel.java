@@ -1,4 +1,4 @@
-package com.moldavets.task_management_system.employee.exception.model;
+package com.moldavets.task_management_system.exception.model;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;

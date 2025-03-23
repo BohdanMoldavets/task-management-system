@@ -8,6 +8,8 @@ import java.util.List;
 public interface EmployeeService {
     List<Employee> getAll();
     Employee getById(Long id);
+    Employee getByUsername(String username);
+    Boolean isExist(String username);
     Employee save(Employee employee);
     Employee update(Long id, RequestEmployeeDto requestEmployeeDto);
     void deleteById(Long id);
