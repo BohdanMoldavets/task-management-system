@@ -1,5 +1,6 @@
 package com.moldavets.task_management_system.task.service.Impl;
 
+import com.moldavets.task_management_system.email.service.EmailSenderService;
 import com.moldavets.task_management_system.employee.model.Employee;
 import com.moldavets.task_management_system.employee.repository.EmployeeRepository;
 import com.moldavets.task_management_system.exception.ResourceNotFoundException;
@@ -10,6 +11,7 @@ import com.moldavets.task_management_system.task.repository.TaskRepository;
 import com.moldavets.task_management_system.task.service.TaskService;
 import com.moldavets.task_management_system.utils.enums.TaskStatus;
 import lombok.AllArgsConstructor;
+import org.springframework.mail.MailSender;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -22,6 +24,7 @@ public class TaskServiceImpl implements TaskService {
 
     private final TaskRepository taskRepository;
     private final EmployeeRepository employeeRepository;
+    private final EmailSenderService emailSenderService;
 
     @Override
     public List<Task> getAll() {
@@ -37,7 +40,6 @@ public class TaskServiceImpl implements TaskService {
     @Override
     @Transactional
     public Task save(Task task) {
-        task.setCreated(new Date());
         return taskRepository.save(task);
     }
 
@@ -65,6 +67,12 @@ public class TaskServiceImpl implements TaskService {
         storedTask.setUpdated(new Date());
         storedTask.setStatus(taskStatus);
 
+        storedTask.getEmployees().forEach(employee -> emailSenderService.send(
+                employee.getEmail(),
+                "Changed Task Status",
+                String.format("Dear, %s! The status of the task - \"%s\" has just been changed to %s", employee.getUsername(), storedTask.getTitle(), taskStatus)
+        ));
+
         return taskRepository.save(storedTask);
     }
 
@@ -89,13 +97,19 @@ public class TaskServiceImpl implements TaskService {
 
         Task updatedTask = taskRepository.save(storedTask);
         employeeRepository.save(storedEmployee);
+
+        emailSenderService.send(
+                storedEmployee.getEmail(),
+                "New Task",
+                String.format("Hi, %s! You just received new task - %s", storedEmployee.getUsername(), updatedTask.getTitle())
+        );
         return updatedTask;
     }
 
     @Override
     @Transactional
     public Task unassignEmployeeToTask(Long id, Long employeeId) {
-        String ResourceNotFoundExceptionMessage = String.format("Employee with id %s already unassigned to task with id %s", id, employeeId);
+        String resourceNotFoundExceptionMessage = String.format("Employee with id %s already unassigned to task with id %s", id, employeeId);
 
         Task storedTask = taskRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException(String.format("Task with id %s not found", id)));
@@ -104,13 +118,13 @@ public class TaskServiceImpl implements TaskService {
                 .orElseThrow(() -> new ResourceNotFoundException(String.format("Employee with id %s not found", employeeId)));
 
         if (!storedTask.getEmployees().contains(storedEmployee)) {
-            throw new ResourceNotFoundException(ResourceNotFoundExceptionMessage);
+            throw new ResourceNotFoundException(resourceNotFoundExceptionMessage);
         }
         storedTask.getEmployees().remove(storedEmployee);
         storedTask.setUpdated(new Date());
 
         if(!storedEmployee.getTasks().contains(storedTask)) {
-            throw new ResourceNotFoundException(ResourceNotFoundExceptionMessage);
+            throw new ResourceNotFoundException(resourceNotFoundExceptionMessage);
         }
         storedEmployee.getTasks().remove(storedTask);
         storedEmployee.setUpdated(new Date());
@@ -121,6 +135,7 @@ public class TaskServiceImpl implements TaskService {
     }
 
     @Override
+    @Transactional
     public void delete(Long id) {
         taskRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException(String.format("Task with id %s not found", id)));

@@ -62,8 +62,8 @@ public class TaskController {
 
 
     @PatchMapping("/{taskId}")
-    public ResponseEntity<ResponseTaskDto> patchTaskById(@PathVariable("taskId") Long taskId,
-                                                         @RequestBody RequestTaskStatusUpdate requestTaskStatus) {
+    public ResponseEntity<ResponseTaskDto> patchTaskStatusById(@PathVariable("taskId") Long taskId,
+                                                               @RequestBody RequestTaskStatusUpdate requestTaskStatus) {
         return new ResponseEntity<>(
                 TaskMapper.mapToResponseTaskDto(taskService.updateStatusById(taskId, requestTaskStatus.getStatus())),
                 HttpStatus.OK
