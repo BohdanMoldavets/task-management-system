@@ -10,6 +10,7 @@ import lombok.Builder;
 import lombok.NoArgsConstructor;
 
 import java.util.List;
+import java.util.Objects;
 
 @Entity
 @Table(name = "employees")
@@ -83,5 +84,18 @@ public class Employee extends BaseEntity {
 
     public void setTasks(List<Task> tasks) {
         this.tasks = tasks;
+    }
+
+    @Override
+    public boolean equals(Object object) {
+        if (object == null || getClass() != object.getClass()) return false;
+        if (!super.equals(object)) return false;
+        Employee employee = (Employee) object;
+        return Objects.equals(username, employee.username) && Objects.equals(password, employee.password) && Objects.equals(email, employee.email) && Objects.equals(roles, employee.roles) && Objects.equals(tasks, employee.tasks);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(super.hashCode(), username, password, email, roles, tasks);
     }
 }

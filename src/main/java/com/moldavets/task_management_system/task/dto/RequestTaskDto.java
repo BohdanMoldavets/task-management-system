@@ -1,7 +1,6 @@
 package com.moldavets.task_management_system.task.dto;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
-import com.moldavets.task_management_system.employee.model.Employee;
 import com.moldavets.task_management_system.utils.enums.TaskStatus;
 import com.moldavets.task_management_system.utils.enums.TaskType;
 import jakarta.persistence.EnumType;

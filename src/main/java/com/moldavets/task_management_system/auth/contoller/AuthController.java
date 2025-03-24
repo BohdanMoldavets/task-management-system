@@ -1,13 +1,8 @@
 package com.moldavets.task_management_system.auth.contoller;
 
 import com.moldavets.task_management_system.auth.dto.JwtRequest;
-import com.moldavets.task_management_system.auth.dto.JwtResponse;
 import com.moldavets.task_management_system.auth.dto.RequestRegistrationEmployeeDto;
-import com.moldavets.task_management_system.auth.exception.RegistrationException;
-import com.moldavets.task_management_system.auth.mapper.AuthMapper;
 import com.moldavets.task_management_system.auth.service.AuthService;
-import com.moldavets.task_management_system.auth.utils.JwtTokenUtils;
-import com.moldavets.task_management_system.employee.service.Impl.EmployeeServiceImpl;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;

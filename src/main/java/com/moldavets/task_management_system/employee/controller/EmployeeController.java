@@ -3,7 +3,6 @@ package com.moldavets.task_management_system.employee.controller;
 import com.moldavets.task_management_system.employee.dto.RequestEmployeeDto;
 import com.moldavets.task_management_system.employee.dto.ResponseEmployeeDto;
 import com.moldavets.task_management_system.employee.mapper.EmployeeMapper;
-import com.moldavets.task_management_system.employee.model.Employee;
 import com.moldavets.task_management_system.employee.service.EmployeeService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;

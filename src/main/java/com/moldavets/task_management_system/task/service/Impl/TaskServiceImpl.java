@@ -5,13 +5,11 @@ import com.moldavets.task_management_system.employee.model.Employee;
 import com.moldavets.task_management_system.employee.repository.EmployeeRepository;
 import com.moldavets.task_management_system.exception.ResourceNotFoundException;
 import com.moldavets.task_management_system.task.dto.RequestTaskDto;
-import com.moldavets.task_management_system.task.dto.RequestTaskEmployeesIds;
 import com.moldavets.task_management_system.task.model.Task;
 import com.moldavets.task_management_system.task.repository.TaskRepository;
 import com.moldavets.task_management_system.task.service.TaskService;
 import com.moldavets.task_management_system.utils.enums.TaskStatus;
 import lombok.AllArgsConstructor;
-import org.springframework.mail.MailSender;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 

@@ -1,7 +1,5 @@
 package com.moldavets.task_management_system.auth.config;
 
-import com.moldavets.task_management_system.employee.service.EmployeeService;
-import com.moldavets.task_management_system.employee.service.Impl.EmployeeServiceImpl;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -15,7 +13,6 @@ import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
 import org.springframework.security.config.http.SessionCreationPolicy;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
@@ -28,7 +25,7 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 @RequiredArgsConstructor
 public class SecurityConfig {
 
-    private final String ROLE_MANAGER = "ROLE_MANAGER";
+    private static final String ROLE_MANAGER = "ROLE_MANAGER";
 
     private final UserDetailsService employeeService;
     private final JwtRequestFilter jwtRequestFilter;

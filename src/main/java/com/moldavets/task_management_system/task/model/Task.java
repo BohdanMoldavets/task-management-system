@@ -1,7 +1,6 @@
 package com.moldavets.task_management_system.task.model;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
-import com.fasterxml.jackson.annotation.JsonManagedReference;
 import com.moldavets.task_management_system.employee.model.Employee;
 import com.moldavets.task_management_system.utils.entity.BaseEntity;
 import com.moldavets.task_management_system.utils.enums.TaskStatus;
@@ -12,6 +11,7 @@ import lombok.Builder;
 import lombok.NoArgsConstructor;
 
 import java.util.List;
+import java.util.Objects;
 
 
 @Entity
@@ -77,5 +77,18 @@ public class Task extends BaseEntity {
 
     public void setEmployees(List<Employee> employees) {
         this.employees = employees;
+    }
+
+    @Override
+    public boolean equals(Object object) {
+        if (object == null || getClass() != object.getClass()) return false;
+        if (!super.equals(object)) return false;
+        Task task = (Task) object;
+        return Objects.equals(title, task.title) && Objects.equals(description, task.description) && type == task.type && status == task.status && Objects.equals(employees, task.employees);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(super.hashCode(), title, description, type, status, employees);
     }
 }
