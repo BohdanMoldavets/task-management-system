@@ -76,7 +76,7 @@ public class TaskController {
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
 
-    //mappings connected with employees
+    //mappings with employees
     @GetMapping("/{taskId}/employees")
     public ResponseEntity<List<ResponseEmployeeDto>> getAllEmployeesByTaskId(@PathVariable("taskId") Long taskId) {
         return new ResponseEntity<>(taskService.getById(taskId).getEmployees().stream()
