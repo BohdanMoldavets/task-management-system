@@ -49,7 +49,10 @@ public class SecurityConfig {
 
                         .requestMatchers("/api/v1/auth/login/**").permitAll()
                         .requestMatchers("/api/v1/auth/registration").hasAuthority(ROLE_MANAGER)
-                        .anyRequest().authenticated()
+
+                        .requestMatchers("/swagger-ui").permitAll()
+
+                        .anyRequest().permitAll()
 
                 ).sessionManagement(session -> session
                         .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
