@@ -35,6 +35,9 @@ public class EmployeeServiceImpl implements EmployeeService, UserDetailsService 
 
     @Override
     public Employee getById(Long id) {
+        if(id == null) {
+            throw new NullPointerException("Id can not be null");
+        }
         return employeeRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException(String.format("Employee with id %s not found", id)));
     }
@@ -61,6 +64,10 @@ public class EmployeeServiceImpl implements EmployeeService, UserDetailsService 
     @Override
     @Transactional
     public Employee update(Long id, RequestEmployeeDto requestEmployeeDto) {
+        if(id == null || requestEmployeeDto == null) {
+            throw new NullPointerException("Id and requestEmployeeDto can not be null");
+        }
+
         Employee storedEmployee = employeeRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException(String.format("Employee with id %s not found", id)));
 

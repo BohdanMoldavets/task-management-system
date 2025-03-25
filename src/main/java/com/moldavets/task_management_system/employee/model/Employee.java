@@ -7,6 +7,7 @@ import com.moldavets.task_management_system.utils.entity.BaseEntity;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
+import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 
 import java.util.List;
@@ -17,6 +18,7 @@ import java.util.Objects;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
+@EqualsAndHashCode(callSuper = true)
 public class Employee extends BaseEntity {
 
     @Column(name = "username")
@@ -29,7 +31,7 @@ public class Employee extends BaseEntity {
     @Column(name = "email")
     private String email;
 
-    @ManyToMany(cascade = CascadeType.ALL)
+    @ManyToMany(cascade = CascadeType.MERGE)
     @JoinTable(
             name = "employees_roles",
             joinColumns = @JoinColumn(name = "employee_id", referencedColumnName = "id"),
@@ -84,18 +86,5 @@ public class Employee extends BaseEntity {
 
     public void setTasks(List<Task> tasks) {
         this.tasks = tasks;
-    }
-
-    @Override
-    public boolean equals(Object object) {
-        if (object == null || getClass() != object.getClass()) return false;
-        if (!super.equals(object)) return false;
-        Employee employee = (Employee) object;
-        return Objects.equals(username, employee.username) && Objects.equals(password, employee.password) && Objects.equals(email, employee.email) && Objects.equals(roles, employee.roles) && Objects.equals(tasks, employee.tasks);
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(super.hashCode(), username, password, email, roles, tasks);
     }
 }

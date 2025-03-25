@@ -5,12 +5,14 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Pattern;
+import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.RequiredArgsConstructor;
 
 @EqualsAndHashCode
 @Data
+@AllArgsConstructor
 @RequiredArgsConstructor
 public class RequestEmployeeDto {
 
