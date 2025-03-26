@@ -7,13 +7,18 @@ import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.ManyToMany;
 import jakarta.persistence.Table;
+import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
+import lombok.NoArgsConstructor;
 
 import java.util.List;
 
 @Entity
 @Data
 @Table(name = "roles")
+@NoArgsConstructor
+@EqualsAndHashCode(callSuper = true)
 public class Role extends BaseEntity {
 
     @Column(name = "name")
@@ -23,4 +28,7 @@ public class Role extends BaseEntity {
     @ManyToMany(mappedBy = "roles")
     private List<Employee> employees;
 
+    public Role(String name) {
+        this.name = name;
+    }
 }

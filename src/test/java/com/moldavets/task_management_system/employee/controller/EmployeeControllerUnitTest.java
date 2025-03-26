@@ -118,13 +118,14 @@ class EmployeeControllerUnitTest {
     @DisplayName("Method should throw exception when employee can not be found")
     void updateEmployee_shouldThrowException_whenEmployeeNotFound() {
         Long employeeId = 1L;
+        RequestEmployeeDto requestEmployeeDto = new RequestEmployeeDto();
         when(employeeService.update(anyLong(), any(RequestEmployeeDto.class)))
                 .thenThrow(new ResourceNotFoundException(String.format("Employee with id %s not found", employeeId)));
 
         String expected = "Employee with id " + employeeId + " not found";
 
         ResourceNotFoundException actual = assertThrows(ResourceNotFoundException.class,
-                () -> employeeService.update(employeeId, new RequestEmployeeDto()));
+                () -> employeeService.update(employeeId, requestEmployeeDto));
 
         assertEquals(expected, actual.getMessage());
     }
