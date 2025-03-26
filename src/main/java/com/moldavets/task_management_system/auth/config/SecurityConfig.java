@@ -1,6 +1,7 @@
 package com.moldavets.task_management_system.auth.config;
 
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
@@ -22,13 +23,18 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 @Configuration
 @EnableWebSecurity
 @EnableMethodSecurity(securedEnabled = true)
-@RequiredArgsConstructor
 public class SecurityConfig {
 
     private static final String ROLE_MANAGER = "ROLE_MANAGER";
 
     private final UserDetailsService employeeService;
     private final JwtRequestFilter jwtRequestFilter;
+
+    @Autowired
+    public SecurityConfig(UserDetailsService employeeService, JwtRequestFilter jwtRequestFilter) {
+        this.employeeService = employeeService;
+        this.jwtRequestFilter = jwtRequestFilter;
+    }
 
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {

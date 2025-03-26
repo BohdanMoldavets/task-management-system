@@ -82,6 +82,9 @@ public class EmployeeServiceImpl implements EmployeeService, UserDetailsService 
     @Override
     @Transactional
     public void deleteById(Long id) {
+        if(id == null) {
+            throw new NullPointerException("Id can not be null");
+        }
         employeeRepository.findById(id)
                 .orElseThrow( () -> new ResourceNotFoundException(String.format("Employee with id %s not found", id)));
         employeeRepository.deleteById(id);

@@ -1,40 +1,29 @@
 package com.moldavets.task_management_system.employee.controller;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
-import com.moldavets.task_management_system.auth.config.JwtRequestFilter;
-import com.moldavets.task_management_system.auth.model.Role;
 import com.moldavets.task_management_system.employee.dto.RequestEmployeeDto;
 import com.moldavets.task_management_system.employee.dto.ResponseEmployeeDto;
 import com.moldavets.task_management_system.employee.model.Employee;
 import com.moldavets.task_management_system.employee.service.EmployeeService;
 import com.moldavets.task_management_system.exception.ResourceNotFoundException;
-import com.moldavets.task_management_system.task.model.Task;
-import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.mockito.Mockito.*;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.autoconfigure.security.servlet.SecurityAutoConfiguration;
-import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.HttpStatusCode;
 import org.springframework.http.ResponseEntity;
-import org.springframework.test.context.bean.override.mockito.MockitoBean;
-import org.springframework.test.web.servlet.MockMvc;
 
-import java.util.Date;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyLong;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
-class EmployeeControllerTest {
+class EmployeeControllerUnitTest {
 
     @Mock
     private EmployeeService employeeService;
@@ -140,8 +129,6 @@ class EmployeeControllerTest {
         assertEquals(expected, actual.getMessage());
     }
 
-
-
     @Test
     @DisplayName("Method should throw exception when employee and request employee dto id is null")
     void updateEmployee_shouldThrowException_whenEmployeeIdIsNull() {
@@ -156,13 +143,43 @@ class EmployeeControllerTest {
         assertEquals(expected, exception.getMessage());
     }
 
+    @Test
+    @DisplayName("Employee can be deleted")
+    void deleteEmployee_shouldDeleteEmployee_whenInputContainsCorrectRequest() {
+        doNothing().when(employeeService).deleteById(anyLong());
 
+        ResponseEntity<HttpStatusCode> expected = new ResponseEntity<>(HttpStatus.NO_CONTENT);
+        ResponseEntity<HttpStatusCode> actual = employeeController.deleteEmployeeById(1L);
 
-//        this.id = id;
-//        this.username = username;
-//        this.email = email;
-//        this.created = created;
-//        this.updated = updated;
-//        this.roles = roles;
-//        this.tasks = tasks;
+        assertEquals(expected.getStatusCode(), actual.getStatusCode());
+    }
+
+    @Test
+    @DisplayName("Method should throw exception when employee can not be found")
+    void deleteEmployee_shouldThrowException_whenEmployeeNotFound() {
+        Long employeeId = 1L;
+        doThrow(new ResourceNotFoundException(String.format("Employee with id %s not found", employeeId)))
+                .when(employeeService).deleteById(employeeId);
+
+        String expected = "Employee with id " + employeeId + " not found";
+
+        ResourceNotFoundException actual = assertThrows(ResourceNotFoundException.class,
+                () -> employeeController.deleteEmployeeById(employeeId));
+
+        assertEquals(expected, actual.getMessage());
+    }
+
+    @Test
+    @DisplayName("Method should throw exception when employee id is null")
+    void deleteEmployee_shouldThrowException_whenEmployeeIdIsNull() {
+        doThrow(new NullPointerException("Id can not be null"))
+                .when(employeeService).deleteById(null);
+
+        String expected = "Id can not be null";
+
+        NullPointerException actual = assertThrows(NullPointerException.class,
+                () -> employeeController.deleteEmployeeById(null));
+
+        assertEquals(expected, actual.getMessage());
+    }
 }
