@@ -3,11 +3,12 @@ package com.moldavets.task_management_system.task.controller;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.moldavets.task_management_system.TaskManagementSystemApplication;
 import com.moldavets.task_management_system.auth.utils.JwtTokenUtils;
-import com.moldavets.task_management_system.employee.controller.EmployeeController;
+import com.moldavets.task_management_system.employee.dto.ResponseEmployeeDto;
 import com.moldavets.task_management_system.employee.model.Employee;
 import com.moldavets.task_management_system.employee.service.EmployeeService;
 import com.moldavets.task_management_system.exception.ResourceNotFoundException;
 import com.moldavets.task_management_system.task.dto.RequestTaskDto;
+import com.moldavets.task_management_system.task.dto.RequestTaskStatusUpdate;
 import com.moldavets.task_management_system.task.model.Task;
 import com.moldavets.task_management_system.task.service.TaskService;
 import com.moldavets.task_management_system.utils.enums.TaskStatus;
@@ -141,6 +142,8 @@ class TaskControllerTest {
                  .andExpect(MockMvcResultMatchers.jsonPath("$.description").value(task.getDescription()))
                  .andExpect(MockMvcResultMatchers.jsonPath("$.type").value(task.getType().toString()))
                  .andExpect(MockMvcResultMatchers.jsonPath("$.status").value(task.getStatus().toString()));
+
+         verify(taskService, times(1)).update(anyLong(), any(RequestTaskDto.class));
     }
 
     @Test
@@ -157,6 +160,98 @@ class TaskControllerTest {
                     .content(objectMapper.writeValueAsString(requestTaskDto)))
                 .andExpect(MockMvcResultMatchers.status().isNotFound())
                 .andExpect(MockMvcResultMatchers.jsonPath("$.message").value(String.format("Task with id %s not found", taskId)));
+
+        verify(taskService, times(1)).update(anyLong(), any(RequestTaskDto.class));
     }
 
+    @Test
+    @DisplayName("Task status can be patched when input contains valid request")
+    void patchTaskStatusById_shouldPatchTaskStatus_whenInputContainsValidRequestTaskStatusUpdate() throws Exception {
+        Long taskId = 1L;
+        RequestTaskStatusUpdate requestStatus = new RequestTaskStatusUpdate(TaskStatus.IN_PROGRESS);
+
+        Task task = new Task("A", "test", TaskType.BUG, TaskStatus.IN_PROGRESS, null);
+        task.setId(taskId);
+
+        when(taskService.updateStatusById(anyLong(), any(TaskStatus.class))).thenReturn(task);
+
+        mockMvc.perform(MockMvcRequestBuilders.patch("/api/v1/tasks/" + taskId)
+                    .contentType(MediaType.APPLICATION_JSON)
+                    .content(objectMapper.writeValueAsString(requestStatus)))
+                .andExpect(MockMvcResultMatchers.status().isOk())
+                .andExpect(MockMvcResultMatchers.jsonPath("$.id").value(taskId))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.status").value(task.getStatus().toString()));
+
+        verify(taskService, times(1)).updateStatusById(anyLong(), any(TaskStatus.class));
+    }
+
+    @Test
+    @DisplayName("Method should throw exception when task does not exist")
+    void patchTaskStatusById_shouldThrowException_whenTaskDoesNotExist() throws Exception {
+        Long taskId = 1L;
+        RequestTaskStatusUpdate requestStatus = new RequestTaskStatusUpdate(TaskStatus.IN_PROGRESS);
+
+        when(taskService.updateStatusById(anyLong(), any(TaskStatus.class)))
+                .thenThrow(new ResourceNotFoundException(String.format("Task with id %s not found", taskId)));
+
+        mockMvc.perform(MockMvcRequestBuilders.patch("/api/v1/tasks/" + taskId)
+                    .contentType(MediaType.APPLICATION_JSON)
+                    .content(objectMapper.writeValueAsString(requestStatus)))
+                .andExpect(MockMvcResultMatchers.status().isNotFound())
+                .andExpect(MockMvcResultMatchers.jsonPath("$.message").value(String.format("Task with id %s not found", taskId)));
+
+        verify(taskService, times(1)).updateStatusById(anyLong(), any(TaskStatus.class));
+    }
+
+    @Test
+    @DisplayName("Task can be deleted by id")
+    void deleteTaskById_shouldDeleteTask_whenInputContainsValidRequest() throws Exception {
+        doNothing().when(taskService).delete(anyLong());
+
+        mockMvc.perform(MockMvcRequestBuilders.delete("/api/v1/tasks/" + 1L))
+                .andExpect(MockMvcResultMatchers.status().isNoContent());
+
+        verify(taskService, times(1)).delete(anyLong());
+    }
+
+    @Test
+    @DisplayName("Method should throw exception when task does not exist")
+    void deleteTaskById_shouldThrowException_whenTaskDoesNotExist() throws Exception {
+        doThrow(ResourceNotFoundException.class).when(taskService).delete(anyLong());
+
+        mockMvc.perform(MockMvcRequestBuilders.delete("/api/v1/tasks/" + 1L))
+                .andExpect(MockMvcResultMatchers.status().isNotFound());
+
+        verify(taskService, times(1)).delete(anyLong());
+    }
+
+    //mappings with employees
+    @Test
+    @DisplayName("Assigned employees can be returned for task")
+    void getAllEmployeesByTaskId_shouldReturnAssignedEmployeesToTask_whenInputContainsValidRequest() throws Exception {
+        Long taskId = 1L;
+
+        Employee john = new Employee("john", "123", "john@mail.com", null, null);
+        john.setId(1L);
+
+        Employee jack = new Employee("jack", "312", "jack@mail.com", null, null);
+        jack.setId(2L);
+
+        Task task = new Task("test","disc", TaskType.BUG, TaskStatus.IN_PROGRESS, List.of(john, jack));
+        task.setId(taskId);
+
+        when(taskService.getById(taskId)).thenReturn(task);
+
+        mockMvc.perform(MockMvcRequestBuilders.get("/api/v1/tasks/" + taskId))
+                .andExpect(MockMvcResultMatchers.status().isOk())
+                .andExpect(MockMvcResultMatchers.jsonPath("$.id").value(taskId))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.employees[0].id").value(john.getId()))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.employees[0].username").value(john.getUsername()))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.employees[0].email").value(john.getEmail()))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.employees[1].id").value(jack.getId()))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.employees[1].username").value(jack.getUsername()))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.employees[1].email").value(jack.getEmail()));
+
+        verify(taskService, times(1)).getById(anyLong());
+    }
 }
