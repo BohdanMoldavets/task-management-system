@@ -6,6 +6,9 @@ import com.moldavets.task_management_system.task.model.Task;
 
 public class TaskMapper {
 
+    private TaskMapper() {
+    }
+
     public static Task mapRequestTaskDto(RequestTaskDto requestTaskDto) {
         return Task.builder()
                 .title(requestTaskDto.getTitle())

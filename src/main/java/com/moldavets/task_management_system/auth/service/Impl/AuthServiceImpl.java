@@ -47,7 +47,7 @@ public class AuthServiceImpl implements AuthService {
             throw new RegistrationException("Passwords do not match");
         }
 
-        if(employeeService.isExist(requestRegistrationEmployeeDto.getUsername())) {
+        if(employeeService.isExistByUsername(requestRegistrationEmployeeDto.getUsername())) {
             throw new RegistrationException("User with this username already exists");
         }
 

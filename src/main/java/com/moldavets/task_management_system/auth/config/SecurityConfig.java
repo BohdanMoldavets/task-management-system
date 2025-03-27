@@ -1,8 +1,7 @@
 package com.moldavets.task_management_system.auth.config;
 
-import com.moldavets.task_management_system.employee.service.EmployeeService;
-import com.moldavets.task_management_system.employee.service.Impl.EmployeeServiceImpl;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
@@ -15,7 +14,6 @@ import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
 import org.springframework.security.config.http.SessionCreationPolicy;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
@@ -25,13 +23,18 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 @Configuration
 @EnableWebSecurity
 @EnableMethodSecurity(securedEnabled = true)
-@RequiredArgsConstructor
 public class SecurityConfig {
 
-    private final String ROLE_MANAGER = "ROLE_MANAGER";
+    private static final String ROLE_MANAGER = "ROLE_MANAGER";
 
     private final UserDetailsService employeeService;
     private final JwtRequestFilter jwtRequestFilter;
+
+    @Autowired
+    public SecurityConfig(UserDetailsService employeeService, JwtRequestFilter jwtRequestFilter) {
+        this.employeeService = employeeService;
+        this.jwtRequestFilter = jwtRequestFilter;
+    }
 
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
@@ -52,7 +55,10 @@ public class SecurityConfig {
 
                         .requestMatchers("/api/v1/auth/login/**").permitAll()
                         .requestMatchers("/api/v1/auth/registration").hasAuthority(ROLE_MANAGER)
-                        .anyRequest().authenticated()
+
+                        .requestMatchers("/swagger-ui").permitAll()
+
+                        .anyRequest().permitAll()
 
                 ).sessionManagement(session -> session
                         .sessionCreationPolicy(SessionCreationPolicy.STATELESS)

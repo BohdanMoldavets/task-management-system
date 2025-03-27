@@ -3,8 +3,9 @@ package com.moldavets.task_management_system.employee.controller;
 import com.moldavets.task_management_system.employee.dto.RequestEmployeeDto;
 import com.moldavets.task_management_system.employee.dto.ResponseEmployeeDto;
 import com.moldavets.task_management_system.employee.mapper.EmployeeMapper;
-import com.moldavets.task_management_system.employee.model.Employee;
 import com.moldavets.task_management_system.employee.service.EmployeeService;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -14,6 +15,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
+@Tag(name = "EmployeeController")
 @RestController
 @RequestMapping("/api/v1/employees")
 @RequiredArgsConstructor
@@ -21,6 +23,7 @@ public class EmployeeController {
 
     private final EmployeeService employeeService;
 
+    @Operation(summary = "Get all Employees")
     @GetMapping
     public ResponseEntity<List<ResponseEmployeeDto>> getAllEmployees() {
         return new ResponseEntity<>(employeeService.getAll().stream()
@@ -36,16 +39,6 @@ public class EmployeeController {
                 HttpStatus.OK
         );
     }
-
-// todo delete because registration implemented in AuthController
-//    @PostMapping
-//    public ResponseEntity<ResponseEmployeeDto> createEmployee(@Valid @RequestBody RequestEmployeeDto requestEmployeeDto) {
-//        Employee storedEmployee = employeeService.save(EmployeeMapper.mapRequestEmployeeDto(requestEmployeeDto));
-//        return new ResponseEntity<>(
-//                EmployeeMapper.mapToResponseEmployeeDto(storedEmployee),
-//                HttpStatus.CREATED
-//        );
-//    }
 
     @PutMapping("/{employeeId}")
     public ResponseEntity<ResponseEmployeeDto> updateEmployee(@PathVariable Long employeeId,

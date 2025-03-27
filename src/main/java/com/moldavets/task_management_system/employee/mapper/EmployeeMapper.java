@@ -6,6 +6,9 @@ import com.moldavets.task_management_system.employee.model.Employee;
 
 public class EmployeeMapper {
 
+    private EmployeeMapper() {
+    }
+
     public static Employee mapRequestEmployeeDto(RequestEmployeeDto requestEmployeeDto) {
         return Employee.builder()
                 .username(requestEmployeeDto.getUsername())

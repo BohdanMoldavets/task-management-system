@@ -6,6 +6,9 @@ import com.moldavets.task_management_system.employee.model.Employee;
 
 public class AuthMapper {
 
+    private AuthMapper() {
+    }
+
     public static Employee mapRegistrationEmployeeDto(RequestRegistrationEmployeeDto requestRegistrationEmployeeDto) {
         return Employee.builder()
                 .username(requestRegistrationEmployeeDto.getUsername())

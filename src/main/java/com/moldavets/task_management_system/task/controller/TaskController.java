@@ -62,8 +62,8 @@ public class TaskController {
 
 
     @PatchMapping("/{taskId}")
-    public ResponseEntity<ResponseTaskDto> patchTaskById(@PathVariable("taskId") Long taskId,
-                                                         @RequestBody RequestTaskStatusUpdate requestTaskStatus) {
+    public ResponseEntity<ResponseTaskDto> patchTaskStatusById(@PathVariable("taskId") Long taskId,
+                                                               @RequestBody RequestTaskStatusUpdate requestTaskStatus) {
         return new ResponseEntity<>(
                 TaskMapper.mapToResponseTaskDto(taskService.updateStatusById(taskId, requestTaskStatus.getStatus())),
                 HttpStatus.OK
@@ -76,7 +76,7 @@ public class TaskController {
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
 
-    //mappings connected with employees
+    //mappings with employees
     @GetMapping("/{taskId}/employees")
     public ResponseEntity<List<ResponseEmployeeDto>> getAllEmployeesByTaskId(@PathVariable("taskId") Long taskId) {
         return new ResponseEntity<>(taskService.getById(taskId).getEmployees().stream()
