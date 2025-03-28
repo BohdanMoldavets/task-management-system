@@ -254,4 +254,115 @@ class TaskControllerTest {
 
         verify(taskService, times(1)).getById(anyLong());
     }
+
+    @Test
+    @DisplayName("Employee can be assigned to task")
+    void assignEmployeeToTaskById_shouldAssignEmployeeToTask_whenInputContainsValidRequest() throws Exception {
+        Long taskId = 1L;
+
+        Employee employee = new Employee("john", "123", "john@mail.com", null, null);
+        employee.setId(1L);
+
+        Task task = new Task("test","disc", TaskType.BUG, TaskStatus.IN_PROGRESS, List.of(employee));
+        task.setId(taskId);
+
+        employee.setTasks(List.of(task));
+
+        when(taskService.assignEmployeeToTask(anyLong(), anyLong())).thenReturn(task);
+
+        mockMvc.perform(MockMvcRequestBuilders.post("/api/v1/tasks/1/employees/1"))
+                .andExpect(MockMvcResultMatchers.status().isOk())
+                .andExpect(MockMvcResultMatchers.jsonPath("$.employees[0].id").value(employee.getId()))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.employees[0].username").value(employee.getUsername()));
+
+        verify(taskService, times(1)).assignEmployeeToTask(anyLong(), anyLong());
+    }
+
+    @Test
+    @DisplayName("Method should throw exception when task does not exist")
+    void assignEmployeeToTaskById_shouldThrowException_whenTaskDoesNotExist() throws Exception {
+        Long taskId = 1L;
+        when(taskService.assignEmployeeToTask(anyLong(), anyLong()))
+                .thenThrow(new ResourceNotFoundException(String.format("Task with id %s not found", taskId)));
+
+        mockMvc.perform(MockMvcRequestBuilders.post("/api/v1/tasks/1/employees/1"))
+                .andExpect(MockMvcResultMatchers.status().isNotFound())
+                .andExpect(MockMvcResultMatchers.jsonPath("$.message").value(String.format("Task with id %s not found", 1)));
+
+        verify(taskService, times(1)).assignEmployeeToTask(anyLong(), anyLong());
+    }
+
+    @Test
+    @DisplayName("Method should throw exception when employee does not exist")
+    void assignEmployeeToTaskById_shouldThrowException_whenEmployeeDoesNotExist() throws Exception {
+        Long employeeId = 1L;
+
+        when(taskService.assignEmployeeToTask(anyLong(), anyLong()))
+                .thenThrow(new ResourceNotFoundException(String.format("Employee with id %s not found", employeeId)));
+
+        mockMvc.perform(MockMvcRequestBuilders.post("/api/v1/tasks/1/employees/1"))
+                .andExpect(MockMvcResultMatchers.status().isNotFound())
+                .andExpect(MockMvcResultMatchers.jsonPath("$.message").value(String.format("Employee with id %s not found", 1)));
+
+        verify(taskService, times(1)).assignEmployeeToTask(anyLong(), anyLong());
+    }
+
+    @Test
+    @DisplayName("Assigned employee can be unassigned")
+    void unassignEmployeeToTaskById_shouldUnassignEmployeeToTask_whenInputContainsValidRequest() throws Exception {
+        Task task = new Task("test","disc", TaskType.BUG, TaskStatus.IN_PROGRESS, null);
+        task.setId(1L);
+
+        when(taskService.unassignEmployeeToTask(anyLong(), anyLong())).thenReturn(task);
+
+        mockMvc.perform(MockMvcRequestBuilders.delete("/api/v1/tasks/1/employees/1"))
+                .andExpect(MockMvcResultMatchers.status().isNoContent());
+
+        verify(taskService, times(1)).unassignEmployeeToTask(anyLong(), anyLong());
+    }
+
+    @Test
+    @DisplayName("Method should throw exception when task does not exist")
+    void unassignEmployeeToTaskById_shouldThrowException_whenTaskDoesNotExist() throws Exception {
+        Long taskId = 1L;
+        when(taskService.unassignEmployeeToTask(anyLong(), anyLong()))
+                .thenThrow(new ResourceNotFoundException(String.format("Task with id %s not found", taskId)));
+
+        mockMvc.perform(MockMvcRequestBuilders.delete("/api/v1/tasks/1/employees/1"))
+                .andExpect(MockMvcResultMatchers.status().isNotFound())
+                .andExpect(MockMvcResultMatchers.jsonPath("$.message").value(String.format("Task with id %s not found", 1)));
+
+        verify(taskService, times(1)).unassignEmployeeToTask(anyLong(), anyLong());
+    }
+
+    @Test
+    @DisplayName("Method should throw exception when employee does not exist")
+    void unassignEmployeeToTaskById_shouldThrowException_whenEmployeeDoesNotExist() throws Exception {
+        Long employeeId = 1L;
+
+        when(taskService.unassignEmployeeToTask(anyLong(), anyLong()))
+                .thenThrow(new ResourceNotFoundException(String.format("Employee with id %s not found", employeeId)));
+
+        mockMvc.perform(MockMvcRequestBuilders.delete("/api/v1/tasks/1/employees/1"))
+                .andExpect(MockMvcResultMatchers.status().isNotFound())
+                .andExpect(MockMvcResultMatchers.jsonPath("$.message").value(String.format("Employee with id %s not found", 1)));
+
+        verify(taskService, times(1)).unassignEmployeeToTask(anyLong(), anyLong());
+    }
+
+    @Test
+    @DisplayName("Method should throw exception when employee already unassigned to task")
+    void unassignEmployeeToTaskById_shouldThrowException_whenEmployeeAlreadyUnassignedToTask() throws Exception {
+        Long taskId = 1L;
+        Long employeeId = 1L;
+
+        when(taskService.unassignEmployeeToTask(anyLong(), anyLong()))
+                .thenThrow(new ResourceNotFoundException(String.format("Employee with id %s already unassigned to task with id %s", taskId, employeeId)));
+
+        mockMvc.perform(MockMvcRequestBuilders.delete("/api/v1/tasks/1/employees/1"))
+                .andExpect(MockMvcResultMatchers.status().isNotFound())
+                .andExpect(MockMvcResultMatchers.jsonPath("$.message").value("Employee with id 1 already unassigned to task with id 1"));
+
+        verify(taskService, times(1)).unassignEmployeeToTask(anyLong(), anyLong());
+    }
 }
