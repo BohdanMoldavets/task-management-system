@@ -39,8 +39,6 @@ class EmployeeServiceImplTest {
     @Mock
     PasswordEncoder passwordEncoder;
 
-
-
     @Test
     @DisplayName("Employees can be returned")
     void getAllEmployees_shouldReturnEmployees_whenDatabaseIsNotEmpty() {

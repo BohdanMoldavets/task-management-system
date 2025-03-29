@@ -96,7 +96,7 @@ public class TaskController {
     @DeleteMapping("/{taskId}/employees/{employeeId}")
     public ResponseEntity<ResponseTaskDto> unassignEmployeeToTaskById(@PathVariable("taskId") Long taskId,
                                                                       @PathVariable("employeeId") Long employeeId) {
-        Task updatedTask = taskService.unassignEmployeeToTask(taskId, employeeId);
+        Task updatedTask = taskService.unassignEmployeeFromTask(taskId, employeeId);
         return new ResponseEntity<>(TaskMapper.mapToResponseTaskDto(updatedTask), HttpStatus.NO_CONTENT);
     }
 
