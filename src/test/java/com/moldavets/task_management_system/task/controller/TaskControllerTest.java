@@ -323,7 +323,7 @@ class TaskControllerTest {
 
     @Test
     @DisplayName("Assigned employee can be unassigned")
-    void unassignEmployeeToTaskById_shouldUnassignEmployeeToTask_whenInputContainsValidRequest() throws Exception {
+    void unassignEmployeeToTaskById_shouldUnassignEmployeeFromTask_whenInputContainsValidRequest() throws Exception {
         Task task = new Task("test","disc", TaskType.BUG, TaskStatus.IN_PROGRESS, null);
         task.setId(1L);
 
@@ -337,7 +337,7 @@ class TaskControllerTest {
 
     @Test
     @DisplayName("Method should throw exception when task does not exist")
-    void unassignEmployeeToTaskById_shouldThrowException_whenTaskDoesNotExist() throws Exception {
+    void unassignEmployeeFromTaskById_shouldThrowException_whenTaskDoesNotExist() throws Exception {
         Long taskId = 1L;
         when(taskService.unassignEmployeeFromTask(anyLong(), anyLong()))
                 .thenThrow(new ResourceNotFoundException(String.format("Task with id %s not found", taskId)));
@@ -351,7 +351,7 @@ class TaskControllerTest {
 
     @Test
     @DisplayName("Method should throw exception when employee does not exist")
-    void unassignEmployeeToTaskById_shouldThrowException_whenEmployeeDoesNotExist() throws Exception {
+    void unassignEmployeeFromTaskById_shouldThrowException_whenEmployeeDoesNotExist() throws Exception {
         Long employeeId = 1L;
 
         when(taskService.unassignEmployeeFromTask(anyLong(), anyLong()))
@@ -366,7 +366,7 @@ class TaskControllerTest {
 
     @Test
     @DisplayName("Method should throw exception when employee already unassigned to task")
-    void unassignEmployeeToTaskById_shouldThrowException_whenEmployeeAlreadyUnassignedToTask() throws Exception {
+    void unassignEmployeeFromTaskById_shouldThrowException_whenEmployeeAlreadyUnassignedFromTask() throws Exception {
         Long taskId = 1L;
         Long employeeId = 1L;
 
