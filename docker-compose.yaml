@@ -13,11 +13,14 @@ services:
       SPRING_DATASOURCE_URL: jdbc:postgresql://database:5432/task-management-system-database
       SPRING_DATASOURCE_USERNAME: postgres
       SPRING_DATASOURCE_PASSWORD: password
+      #FOLLOW THIS LINK TO SET UP NEXT PROPS - https://support.google.com/accounts/answer/185833?hl=en
+      #SPRING_MAIL_USERNAME:
+      #SPRING_MAIL_PASSWORD:
     networks:
       - task-management-network
 
   database:
-    image: postgres
+    image: postgres:13.7-alpine
     restart: always
     environment:
       - POSTGRES_USER=postgres
