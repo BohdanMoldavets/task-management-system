@@ -36,15 +36,4 @@ class EmployeeMapperTest {
         assertEquals(expected.getUsername(), actual.getUsername());
         assertEquals(expected.getEmail(), actual.getEmail());
     }
-
-
-//                    .id(employee.getId())
-//            .username(employee.getUsername())
-//            .email(employee.getEmail())
-//            .created(employee.getCreated())
-//            .updated(employee.getUpdated())
-//            .roles(employee.getRoles())
-//            .tasks(employee.getTasks())
-//            .build();
-
-}
+    }

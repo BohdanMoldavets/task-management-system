@@ -1,0 +1,35 @@
+version: '3.8'
+
+services:
+  app:
+    build: .
+    restart: always
+    mem_limit: 700M
+    ports:
+      - "8080:8080"
+    depends_on:
+      - database
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:postgresql://database:5432/task-management-system-database
+      SPRING_DATASOURCE_USERNAME: postgres
+      SPRING_DATASOURCE_PASSWORD: password
+      #FOLLOW THIS LINK TO SET UP NEXT PROPS - https://support.google.com/accounts/answer/185833?hl=en
+      #SPRING_MAIL_USERNAME:
+      #SPRING_MAIL_PASSWORD:
+    networks:
+      - task-management-network
+
+  database:
+    image: postgres:13.7-alpine
+    restart: always
+    environment:
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=password
+      - POSTGRES_DB=task-management-system-database
+    ports:
+      - "5431:5432"
+    networks:
+      - task-management-network
+
+networks:
+  task-management-network:

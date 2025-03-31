@@ -1,5 +1,6 @@
 package com.moldavets.task_management_system.exception.handler;
 
+import com.moldavets.task_management_system.exception.ConflictException;
 import com.moldavets.task_management_system.exception.ResourceNotFoundException;
 import com.moldavets.task_management_system.auth.exception.UnauthorizedException;
 import com.moldavets.task_management_system.exception.model.ExceptionDetailsModel;
@@ -34,6 +35,11 @@ public class CustomResponseEntityExceptionHandler {
     @ExceptionHandler(ResourceNotFoundException.class)
     public ResponseEntity<ExceptionDetailsModel> handleResourceNotFoundException(Exception ex, WebRequest request) {
         return new ResponseEntity<>(createExceptionDetailsModel(ex, request), HttpStatus.NOT_FOUND);
+    }
+
+    @ExceptionHandler(ConflictException.class)
+    public ResponseEntity<ExceptionDetailsModel> handleConflictException(Exception ex, WebRequest request) {
+        return new ResponseEntity<>(createExceptionDetailsModel(ex, request), HttpStatus.CONFLICT);
     }
 
     @ExceptionHandler(UnauthorizedException.class)

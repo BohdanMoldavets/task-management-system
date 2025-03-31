@@ -23,7 +23,7 @@ public class EmployeeController {
 
     private final EmployeeService employeeService;
 
-    @Operation(summary = "Get all Employees")
+    @Operation(summary = "Get all the employees")
     @GetMapping
     public ResponseEntity<List<ResponseEmployeeDto>> getAllEmployees() {
         return new ResponseEntity<>(employeeService.getAll().stream()
@@ -32,6 +32,7 @@ public class EmployeeController {
                 HttpStatus.OK);
     }
 
+    @Operation(summary = "Get the employee by id")
     @GetMapping("/{employeeId}")
     public ResponseEntity<ResponseEmployeeDto> getEmployeeById(@PathVariable("employeeId") Long employeeId) {
         return new ResponseEntity<>(
@@ -40,6 +41,7 @@ public class EmployeeController {
         );
     }
 
+    @Operation(summary = "Update the employee by id")
     @PutMapping("/{employeeId}")
     public ResponseEntity<ResponseEmployeeDto> updateEmployee(@PathVariable Long employeeId,
                                                               @Valid @RequestBody RequestEmployeeDto requestEmployeeDto) {
@@ -49,6 +51,7 @@ public class EmployeeController {
         );
     }
 
+    @Operation(summary = "Delete the employee by id")
     @DeleteMapping("/{employeeId}")
     public ResponseEntity<HttpStatusCode> deleteEmployeeById(@PathVariable("employeeId") Long employeeId) {
         employeeService.deleteById(employeeId);

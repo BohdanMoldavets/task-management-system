@@ -14,6 +14,6 @@ public interface TaskService {
     Task update(Long id, RequestTaskDto task);
     Task updateStatusById(Long id, TaskStatus taskStatus);
     Task assignEmployeeToTask(Long id, Long employeeId);
-    Task unassignEmployeeToTask(Long id, Long employeeId);
+    Task unassignEmployeeFromTask(Long id, Long employeeId);
     void delete(Long id);
 }

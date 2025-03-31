@@ -3,6 +3,7 @@ package com.moldavets.task_management_system.task.service.Impl;
 import com.moldavets.task_management_system.email.service.EmailSenderService;
 import com.moldavets.task_management_system.employee.model.Employee;
 import com.moldavets.task_management_system.employee.repository.EmployeeRepository;
+import com.moldavets.task_management_system.exception.ConflictException;
 import com.moldavets.task_management_system.exception.ResourceNotFoundException;
 import com.moldavets.task_management_system.task.dto.RequestTaskDto;
 import com.moldavets.task_management_system.task.model.Task;
@@ -31,6 +32,9 @@ public class TaskServiceImpl implements TaskService {
 
     @Override
     public Task getById(Long id) {
+        if(id == null) {
+            throw new NullPointerException("Id can not be null");
+        }
         return taskRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException(String.format("Task with id %s not found", id)));
     }
@@ -44,6 +48,9 @@ public class TaskServiceImpl implements TaskService {
     @Override
     @Transactional
     public Task update(Long id, RequestTaskDto task) {
+        if(id == null) {
+            throw new NullPointerException("Id can not be null");
+        }
         Task storedTask = taskRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException(String.format("Task with id %s not found", id)));
 
@@ -59,6 +66,9 @@ public class TaskServiceImpl implements TaskService {
     @Override
     @Transactional
     public Task updateStatusById(Long id, TaskStatus taskStatus) {
+        if(id == null) {
+            throw new NullPointerException("Id can not be null");
+        }
         Task storedTask = taskRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException(String.format("Task with id %s not found", id)));
 
@@ -77,6 +87,9 @@ public class TaskServiceImpl implements TaskService {
     @Override
     @Transactional
     public Task assignEmployeeToTask(Long id, Long employeeId) {
+        if(id == null || employeeId == null) {
+            throw new NullPointerException("Id can not be null");
+        }
         Task storedTask = taskRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException(String.format("Task with id %s not found", id)));
 
@@ -84,6 +97,11 @@ public class TaskServiceImpl implements TaskService {
                 .orElseThrow(() -> new ResourceNotFoundException(String.format("Employee with id %s not found", employeeId)));
 
         List<Employee> taskEmployees = storedTask.getEmployees();
+        taskEmployees.forEach(tempEmployee -> {
+            if(tempEmployee.getId().equals(employeeId)) {
+                throw new ConflictException("Employee with id "+ employeeId +" already assigned to task with id " + id);
+            }
+        });
         taskEmployees.add(storedEmployee);
 
         storedTask.setEmployees(taskEmployees);
@@ -106,9 +124,10 @@ public class TaskServiceImpl implements TaskService {
 
     @Override
     @Transactional
-    public Task unassignEmployeeToTask(Long id, Long employeeId) {
-        String resourceNotFoundExceptionMessage = String.format("Employee with id %s already unassigned to task with id %s", id, employeeId);
-
+    public Task unassignEmployeeFromTask(Long id, Long employeeId) {
+        if(id == null || employeeId == null) {
+            throw new NullPointerException("Id can not be null");
+        }
         Task storedTask = taskRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException(String.format("Task with id %s not found", id)));
 
@@ -116,14 +135,11 @@ public class TaskServiceImpl implements TaskService {
                 .orElseThrow(() -> new ResourceNotFoundException(String.format("Employee with id %s not found", employeeId)));
 
         if (!storedTask.getEmployees().contains(storedEmployee)) {
-            throw new ResourceNotFoundException(resourceNotFoundExceptionMessage);
+            throw new ConflictException(String.format("Employee with id %s already unassigned to task with id %s", id, employeeId));
         }
         storedTask.getEmployees().remove(storedEmployee);
         storedTask.setUpdated(new Date());
 
-        if(!storedEmployee.getTasks().contains(storedTask)) {
-            throw new ResourceNotFoundException(resourceNotFoundExceptionMessage);
-        }
         storedEmployee.getTasks().remove(storedTask);
         storedEmployee.setUpdated(new Date());
 
@@ -135,6 +151,9 @@ public class TaskServiceImpl implements TaskService {
     @Override
     @Transactional
     public void delete(Long id) {
+        if(id == null) {
+            throw new NullPointerException("Id can not be null");
+        }
         taskRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException(String.format("Task with id %s not found", id)));
         taskRepository.deleteById(id);
